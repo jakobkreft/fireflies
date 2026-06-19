@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#05070f">
+<meta name="description" content="A tiny firefly simulation — tap to bring them to life and watch them synchronise.">
+<link rel="icon" type="image/gif" href="assets/favicon.gif">
+<title>fireflies</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <canvas id="scene"></canvas>
+  <div id="intro">
+    <h1>fireflies</h1>
+    <p>tap anywhere</p>
+    <button id="help" type="button" aria-label="about this simulation">?</button>
+  </div>
+
+  <div id="about" role="dialog" aria-modal="true" aria-label="about">
+    <button id="about-close" type="button" aria-label="close">&times;</button>
+    <div class="wrap">
+      <h2>about</h2>
+
+      <p>Two ideas run this whole thing: how the fireflies move, and how they
+        learn to blink together. Both are well studied, and both have simple
+        cores. Here is what is going on.</p>
+
+      <h3>how they fly</h3>
+      <p>Each firefly steers itself instead of following a set path. The base of
+        its movement is a wander: it holds a heading that drifts a little at
+        every step, with the occasional sharp turn, so the flight looks like
+        searching rather than gliding. Its speed rises and falls on its own, and
+        now and then it slows almost to a stop and hovers in place.</p>
+      <p>Layered on top is a light sense of company. A firefly pushes away from
+        whichever neighbours get too close, turns a touch toward the average
+        direction of the ones near it, and drifts gently toward their center.
+        Keeping apart is the strongest of the three pulls, so they stay loose and
+        never collapse into a tight ball. They also tend to keep low, near the
+        plants, rather than climb into open sky.</p>
+      <p>This way of building motion out of a few simple urges is called steering
+        behaviours, introduced by Craig Reynolds with his
+        <a href="https://www.red3d.com/cwr/boids/" target="_blank" rel="noopener">Boids</a>
+        model. The same small set of forces, mixed in different proportions, can
+        give you a flock of birds, a school of fish, or one insect feeling its
+        way through the night.</p>
+
+      <h3>how they blink</h3>
+      <p>Some species of firefly blink in unison. On a good night a whole
+        riverbank of them can pulse as one, with no leader and nothing telling
+        them when to fire. The surprising part is that this needs no central
+        clock. It falls out of each firefly reacting only to the ones it can
+        see.</p>
+      <p>Every firefly here carries an internal clock, a value that climbs
+        steadily, triggers a flash when it reaches the top, then resets. Whenever
+        it sees a neighbour flash, it bumps its own clock a little further along.
+        A firefly that was already near the top gets pushed over and fires as
+        well, so flashes ripple through the crowd and gradually fall into step.
+        This is the pulse-coupled oscillator model of
+        <a href="https://epubs.siam.org/doi/10.1137/0150098" target="_blank" rel="noopener">Mirollo
+        and Strogatz</a>, who showed that such oscillators almost always end up
+        synchronised.</p>
+      <p>There is a slower second layer. On top of reacting to single flashes,
+        each firefly eases the length of its own cycle toward the average of
+        those around it, so the group agrees not only on when to flash but on how
+        fast to repeat. The idea that a population of oscillators can settle on a
+        shared frequency this way goes back to
+        <a href="https://en.wikipedia.org/wiki/Kuramoto_model" target="_blank" rel="noopener">Yoshiki
+        Kuramoto</a>.</p>
+      <p>Two touches keep it from feeling mechanical. The pull between fireflies
+        is local and weakens with distance, so order spreads outward in waves
+        instead of switching on everywhere at once. And right after it fires, a
+        firefly briefly stops listening, the way a nerve cell needs a short rest
+        before it can fire again.</p>
+      <p>Perfect agreement would look like a machine, so the fireflies are
+        allowed to slip. Once in a while one drops a beat and stays dark, or
+        holds its light a little too long and falls behind, tugging on the timing
+        of its neighbours before the group pulls it back. So the swarm keeps
+        drifting into sync and out of it again, never quite locking solid. If you
+        want the wider story, Steven Strogatz's talk on
+        <a href="https://www.ted.com/talks/steven_strogatz_the_science_of_sync" target="_blank" rel="noopener">the
+        science of sync</a> is a good place to start.</p>
+
+      <h3>the plants</h3>
+      <p>The grass and ferns are not pictures. Each plant is grown in place from
+        a tiny rulebook: start a stem, split it into thinner stems and leaves,
+        then run the same step again on each new piece. A rule that keeps calling
+        itself is enough to produce fronds, weeds, and broad leaves that all look
+        related yet none the same.</p>
+      <p>These are
+        <a href="https://en.wikipedia.org/wiki/L-system" target="_blank" rel="noopener">L-systems</a>,
+        named after the biologist Aristid Lindenmayer, who used them to describe
+        how plants and simple organisms grow. Each plant is regrown from the same
+        seed on every frame, so its shape never changes and only the wind moves
+        it. The sway adds up along the length of each stem, which is why the tips
+        lean the most while the base barely stirs.</p>
+
+      <h3>the look</h3>
+      <p>The picture is drawn small and then blown up without smoothing, which is
+        where the crisp blocky pixels come from. Light is added rather than
+        painted over: each lantern brightens whatever sits behind it, so a flash
+        blooms and spills softly onto the leaves nearby instead of covering them.
+        Every flash also has a quick rise, a brief hold, and a slow fade, closer
+        to a real lantern warming and cooling than a plain switch.</p>
+
+      <h3>read more</h3>
+      <ul class="refs">
+        <li>Craig Reynolds,
+          <a href="https://www.red3d.com/cwr/steer/" target="_blank" rel="noopener">Steering Behaviors for Autonomous Characters</a>.</li>
+        <li>Renato Mirollo and Steven Strogatz,
+          <a href="https://epubs.siam.org/doi/10.1137/0150098" target="_blank" rel="noopener">Synchronization of Pulse-Coupled Biological Oscillators</a>.</li>
+        <li>Yoshiki Kuramoto,
+          <a href="https://en.wikipedia.org/wiki/Kuramoto_model" target="_blank" rel="noopener">the Kuramoto model</a>.</li>
+        <li>Przemyslaw Prusinkiewicz and Aristid Lindenmayer,
+          <a href="http://algorithmicbotany.org/papers/abop/abop.pdf" target="_blank" rel="noopener">The Algorithmic Beauty of Plants</a>.</li>
+      </ul>
+
+      <p class="dedication">
+        <strong>for Paola</strong>
+        thank you
+      </p>
+    </div>
+  </div>
+
+  <script src="main.js"></script>
+</body>
+</html>

@@ -1,0 +1,8 @@
+# editor / tooling
+.claude/
+.DS_Store
+Thumbs.db
+
+# scratch / helper files
+_*
+*.tmp
